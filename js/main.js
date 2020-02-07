@@ -94,7 +94,7 @@ var activeMap = function () { // Активируем карту
     disabledState(isDisabled);
 
     renderPin(getArrayAds(TOTAL_PINS));
-    // renderCard(getArrayAds(TOTAL_PINS), TOTAL_PINS);
+    renderCard(getArrayAds(TOTAL_PINS), TOTAL_PINS);
   }
 };
 
