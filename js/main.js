@@ -1,7 +1,7 @@
 'use strict';
 
 var HOUSE_TYPES = ['palace', 'flat', 'house', 'bungalo'];
-var CHECKIN_CHECKOUT_TIME = ['12: 00', '13: 00', '14: 00'];
+var TIME_IN_AND_OUT = ['12:00', '13:00', '14:00'];
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var PHOTO_URLS = [
   'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
@@ -17,6 +17,12 @@ var KeyCode = {
 };
 var ButtonPressed = {
   LEFT_MOUSE_BTN: 0
+};
+var HouseTypesPrices = {
+  PALACE: 10000,
+  FLAT: 1000,
+  HOUSE: 5000,
+  BUNGALO: 0
 };
 var TOTAL_PINS = 8;
 var PIN_WIDTH = 50;
@@ -39,6 +45,18 @@ var formFilters = mapFilters.querySelector('.map__filters');
 var address = adForm.querySelector('#address');
 var formRoomNumber = adForm.querySelector('#room_number');
 var selectGuest = adForm.querySelector('#capacity');
+var avatar = adForm.querySelector('#avatar');
+var images = adForm.querySelector('#images');
+var typeOfHousing = adForm.querySelector('#type');
+var price = adForm.querySelector('#price');
+var timeIn = adForm.querySelector('#timein');
+var timeOut = adForm.querySelector('#timeout');
+
+var setInitialPrice = function () {
+  price.placeholder = HouseTypesPrices[typeOfHousing.value.toUpperCase()];
+  return price;
+};
+setInitialPrice();
 
 var disabledState = function (bool) {
   adForm.querySelectorAll('fieldset').forEach(function (fieldset) {
@@ -107,13 +125,13 @@ var onMapPinMouseDown = function (evt) {
 // Написать валидацию, которая удаляет неподходящие элементы из селекта #capacity
 var onChangeRoom = function () {
   if (formRoomNumber.value === '1' && selectGuest.value !== '1') {
-    selectGuest.setCustomValidity('1 комната — «для 1 гостя»');
+    selectGuest.setCustomValidity('«1 комната» - «для 1 гостя»');
   } else if (formRoomNumber.value === '2' && (selectGuest.value !== '1' && selectGuest.value !== '2')) {
-    selectGuest.setCustomValidity('2 комнаты — «для 2 гостей» или «для 1 гостя»');
+    selectGuest.setCustomValidity('«2 комнаты» - «для 2 гостей» или «для 1 гостя»');
   } else if (formRoomNumber.value === '3' && selectGuest.value === '0') {
-    selectGuest.setCustomValidity('3 комнаты — «для 3 гостей», «для 2 гостей» или «для 1 гостя»');
+    selectGuest.setCustomValidity('«3 комнаты» - «для 3 гостей», «для 2 гостей» или «для 1 гостя»');
   } else if (formRoomNumber.value === '100' && selectGuest.value !== '0') {
-    selectGuest.setCustomValidity('100 комнат — «не для гостей»');
+    selectGuest.setCustomValidity('«100 комнат» - «не для гостей»');
   } else {
     selectGuest.setCustomValidity('');
   }
@@ -167,8 +185,8 @@ var createAd = function (number) { // Создаем объект объявле
       type: getRandomElementArr(HOUSE_TYPES),
       rooms: getRandomNumber(0, 7),
       guests: getRandomNumber(1, 15),
-      checkin: getRandomElementArr(CHECKIN_CHECKOUT_TIME),
-      checkout: getRandomElementArr(CHECKIN_CHECKOUT_TIME),
+      checkin: getRandomElementArr(TIME_IN_AND_OUT),
+      checkout: getRandomElementArr(TIME_IN_AND_OUT),
       features: getRandomLengthArr(FEATURES),
       description: 'строка с описанием предложенного объявления',
       photos: getRandomLengthArr(PHOTO_URLS)
@@ -291,7 +309,84 @@ var renderPhotos = function (photos) { // Отрисовываем фотогр�
   }
 };
 
+
+// Обработчик для показа карточки объявления при клики на Пин
+// mapPins.addEventListener('click', function (evt) {
+//   var target = evt.target;
+//   var btnPins = mapPins.querySelectorAll('button[type="button"');
+//   console.log('target: ', target);
+
+//   btnPins.forEach(function (btn) {
+
+//     // if (target !== btn) return;
+
+//     console.log('btnPins: ', btn);
+//   });
+// });
+
+// var checkTypeHouse = function () {
+//   ty
+// };
+
+var setInAndOutTime = function (time) {
+  timeIn.value = time;
+  timeOut.value = time;
+};
+
+timeIn.addEventListener('change', function (evt) {
+  setInAndOutTime(evt.target.value);
+});
+
+timeOut.addEventListener('change', function (evt) {
+  setInAndOutTime(evt.target.value);
+});
+
+var onTypeHouseChoosing = function (evt) {
+  var value = evt.target.value;
+  var minPrice = HouseTypesPrices[value.toUpperCase()];
+
+  switch (typeOfHousing.value) {
+    case 'bungalo':
+      price.placeholder = minPrice;
+      price.min = minPrice;
+      break;
+    case 'flat':
+      price.placeholder = minPrice;
+      price.min = minPrice;
+      break;
+    case 'house':
+      price.placeholder = minPrice;
+      price.min = minPrice;
+      break;
+    case 'palace':
+      price.placeholder = minPrice;
+      price.min = minPrice;
+      break;
+  }
+};
+
+var getFileExtension = function (str) {
+  return str.slice(str.lastIndexOf('.') + 1);
+};
+
+var checkFileExtension = function (input) {
+  if (input.value.includes('.png') || input.value.includes('.jpeg') || input.value.includes('.jpg')) {
+    input.setCustomValidity('');
+  } else {
+    input.setCustomValidity('Ваш формат файла "' + getFileExtension(input.value) + '", разрешенными форматами являются: jpg и png. Пожалуйста проверьте формат загружаемого файла.');
+  }
+};
+
+avatar.addEventListener('input', function () {
+  checkFileExtension(avatar);
+});
+
+images.addEventListener('input', function () {
+  checkFileExtension(images);
+});
+
 mapPinMain.addEventListener('keydown', onPinMainEnterPress);
 mapPinMain.addEventListener('mousedown', onMapPinMouseDown);
 formRoomNumber.addEventListener('change', onChangeRoom);
 selectGuest.addEventListener('change', onChangeRoom);
+typeOfHousing.addEventListener('input', onTypeHouseChoosing);
