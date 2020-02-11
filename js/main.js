@@ -52,6 +52,7 @@ var price = adForm.querySelector('#price');
 var timeIn = adForm.querySelector('#timein');
 var timeOut = adForm.querySelector('#timeout');
 
+
 var setInitialPrice = function () {
   price.placeholder = HouseTypesPrices[typeOfHousing.value.toUpperCase()];
   return price;
@@ -99,7 +100,6 @@ var getCoordPinMain = function (bool) {
 
 getCoordPinMain(isActive);
 
-
 var activeMap = function () { // Активируем карту
   if (map.classList.contains('map--faded')) {
     isDisabled = false;
@@ -111,8 +111,7 @@ var activeMap = function () { // Активируем карту
     getCoordPinMain(isActive);
     disabledState(isDisabled);
 
-    renderPin(getArrayAds(TOTAL_PINS));
-    renderCard(getArrayAds(TOTAL_PINS), TOTAL_PINS);
+    renderPins(getArrayAds());
   }
 };
 
@@ -173,6 +172,11 @@ var declensionWords = function (totalRooms, totalQuests) { // Проверяем
   return message;
 };
 
+// createAd, getArrayAds
+
+/*
+Создаю один шаблон объекта с данными нашего объявления и возвращаю это объявление
+*/
 var createAd = function (number) { // Создаем объект объявления
   var ad = {
     author: {
@@ -200,31 +204,20 @@ var createAd = function (number) { // Создаем объект объявле
   return ad;
 };
 
-var getArrayAds = function (total) { // Получаем массив объектов объявления
+/*
+Из полученного шаблона создаю функцию которая возвращает массив объектов объявлений
+*/
+var getArrayAds = function () { // Получаем массив объектов объявлений
   var ads = [];
 
-  for (var i = 1; i <= total; i++) {
+  for (var i = 1; i <= TOTAL_PINS; i++) {
     ads.push(createAd(i));
   }
 
   return ads;
 };
 
-var renderPin = function (ads) { // Отрисовываем Пины на страницу
-  var pinFragment = document.createDocumentFragment();
-
-  for (var i = 0; i < TOTAL_PINS; i++) {
-    var ad = ads[i];
-
-    var newPinTemplate = templatePin.cloneNode(true);
-    newPinTemplate.querySelector('img').src = ad.author.avatar;
-    newPinTemplate.querySelector('img').alt = ad.offer.title;
-    newPinTemplate.style = 'left: ' + (ad.location.x) + 'px; top: ' + (ad.location.y) + 'px;';
-    pinFragment.appendChild(newPinTemplate);
-  }
-
-  mapPins.appendChild(pinFragment);
-};
+// createPin, closeCard, getArrayAds().forEach
 
 var getTypeHouse = function (typeHouse) { // Получаем тип жилища в зависимости от полученых данных
   var type = '';
@@ -247,41 +240,18 @@ var getTypeHouse = function (typeHouse) { // Получаем тип жилищ�
   return type;
 };
 
-var renderCard = function (ads, number) { // Отрисовываем карточки объявлений
-  var cardsFragment = document.createDocumentFragment();
-
-  for (var i = 0; i < number; i++) {
-    var ad = ads[i];
-
-    var newCardTemplate = templateCard.cloneNode(true);
-    newCardTemplate.querySelector('.popup__avatar').src = ad.author.avatar;
-    newCardTemplate.querySelector('.popup__title').textContent = ad.offer.title;
-    newCardTemplate.querySelector('.popup__text--address').textContent = ad.offer.address;
-    newCardTemplate.querySelector('.popup__text--price').textContent = ad.offer.price + '₽/ночь';
-    newCardTemplate.querySelector('.popup__type').textContent = getTypeHouse(ad.offer.type);
-    newCardTemplate.querySelector('.popup__text--capacity').textContent = declensionWords(ad.offer.rooms, ad.offer.guests);
-    newCardTemplate.querySelector('.popup__text--time').textContent = 'Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkout;
-    newCardTemplate.querySelector('.popup__description').textContent = ad.offer.description;
-    renderFeature(ad.offer.features);
-    renderPhotos(ad.offer.photos);
-
-    cardsFragment.appendChild(newCardTemplate);
-  }
-
-  map.insertBefore(cardsFragment, mapFilters);
-};
+// createCard
 
 var renderFeature = function (features) { // Отрисовываем особенности объявления
   var featuresFragment = document.createDocumentFragment();
   var featureList = templateCard.querySelector('.popup__features');
   featureList.innerHTML = '';
 
-  for (var i = 0; i < features.length; i++) {
+  features.forEach(function (feature) {
     var newFeature = document.createElement('li');
-    newFeature.classList.add('popup__feature');
-    newFeature.classList.add('popup__feature--' + features[i]);
+    newFeature.className = 'popup__feature popup__feature--' + feature;
     featuresFragment.appendChild(newFeature);
-  }
+  });
 
   if (features.length > 0) {
     featureList.appendChild(featuresFragment);
@@ -291,42 +261,24 @@ var renderFeature = function (features) { // Отрисовываем особе
 };
 
 var renderPhotos = function (photos) { // Отрисовываем фотографии объявления
-  var photosFragment = document.createDocumentFragment();
+  // var photosFragment = document.createDocumentFragment();
   var photosList = templateCard.querySelector('.popup__photos');
-  var photoItem = photosList.querySelector('.popup__photo');
+  // var photoItem = photosList.querySelector('.popup__photo');
   photosList.innerHTML = '';
 
-  for (var i = 0; i < photos.length; i++) {
-    var newPhoto = photoItem.cloneNode(true);
-    newPhoto.src = photos[i];
-    photosFragment.appendChild(newPhoto);
-  }
+  photos.forEach(function (photo) {
+    photosList.innerHTML += '<img src="' + photo + '" class="popup__photo" width="45" height="40" alt="Фотография жилья">';
+    // var newPhoto = photoItem.cloneNode(true);
+    // newPhoto.src = photo;
+    // photosFragment.appendChild(newPhoto);
+  });
 
-  if (photos.length > 0) {
-    photosList.appendChild(photosFragment);
-  } else {
-    photosList.classList.add('hidden');
-  }
+  // if (photos.length > 0) {
+  //   photosList.appendChild(photosFragment);
+  // } else {
+  //   photosList.classList.add('hidden');
+  // }
 };
-
-
-// Обработчик для показа карточки объявления при клики на Пин
-// mapPins.addEventListener('click', function (evt) {
-//   var target = evt.target;
-//   var btnPins = mapPins.querySelectorAll('button[type="button"');
-//   console.log('target: ', target);
-
-//   btnPins.forEach(function (btn) {
-
-//     // if (target !== btn) return;
-
-//     console.log('btnPins: ', btn);
-//   });
-// });
-
-// var checkTypeHouse = function () {
-//   ty
-// };
 
 var setInAndOutTime = function (time) {
   timeIn.value = time;
@@ -384,6 +336,77 @@ avatar.addEventListener('input', function () {
 images.addEventListener('input', function () {
   checkFileExtension(images);
 });
+
+/*
+Создаю пин на основе полученных данных из массива
+*/
+var createPin = function (ad) { // Создаем Пин по полученным данным из массива
+  var newPinTemplate = templatePin.cloneNode(true);
+  newPinTemplate.querySelector('img').src = ad.author.avatar;
+  newPinTemplate.querySelector('img').alt = ad.offer.title;
+  newPinTemplate.style = 'left: ' + (ad.location.x) + 'px; top: ' + (ad.location.y) + 'px;';
+
+  // При клики на пин вызывается функция с проверкой на наличие существующих карточек объявлений в разметке, если их нет, тогда создается новая карточка и вставляется перед контейнером mapFilters
+  newPinTemplate.addEventListener('click', function () {
+    openCardAd(ad);
+  });
+
+  return newPinTemplate;
+};
+
+/*
+Прохожу по каждому элементу массива объектов. Каждый полученный элемент массива передаю в функцию создания пина и добавляю этот пин в контейнер для пинов
+*/
+var renderPins = function (ads) {
+  ads.forEach(function (ad) {
+    mapPins.appendChild(createPin(ad));
+  });
+};
+
+/*
+Проверяю находятся ли в контейнере с пинами сами пины, если да, тогда удаляем их
+*/
+var closeCardAd = function () {
+  var card = document.querySelector('.map__card');
+  if (card) {
+    card.remove();
+    document.removeEventListener('keydown', onPopupCloseEscPress);
+  }
+};
+
+var openCardAd = function (ad) {
+  closeCardAd();
+  map.insertBefore(createCard(ad), mapFilters);
+  document.addEventListener('keydown', onPopupCloseEscPress);
+};
+
+var onPopupCloseEscPress = function (evt) {
+  if (evt.keyCode === KeyCode.ESC) {
+    closeCardAd();
+  }
+};
+
+/*
+Создаю функцию, которая принимает данные пина, на котором произошло событие клика. По этим данным создаю карточку объявлений и возвращаю её
+*/
+var createCard = function (ad) { // Создаем карточку объявлений по полученным данным из массива
+  var newCardTemplate = templateCard.cloneNode(true);
+  newCardTemplate.querySelector('.popup__avatar').src = ad.author.avatar;
+  newCardTemplate.querySelector('.popup__title').textContent = ad.offer.title;
+  newCardTemplate.querySelector('.popup__text--address').textContent = ad.offer.address;
+  newCardTemplate.querySelector('.popup__text--price').textContent = ad.offer.price + '₽/ночь';
+  newCardTemplate.querySelector('.popup__type').textContent = getTypeHouse(ad.offer.type);
+  newCardTemplate.querySelector('.popup__text--capacity').textContent = declensionWords(ad.offer.rooms, ad.offer.guests);
+  newCardTemplate.querySelector('.popup__text--time').textContent = 'Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkout;
+  newCardTemplate.querySelector('.popup__description').textContent = ad.offer.description;
+  renderFeature(ad.offer.features);
+  renderPhotos(ad.offer.photos);
+  newCardTemplate.querySelector('.popup__close').addEventListener('click', function () {
+    closeCardAd();
+  });
+
+  return newCardTemplate;
+};
 
 mapPinMain.addEventListener('keydown', onPinMainEnterPress);
 mapPinMain.addEventListener('mousedown', onMapPinMouseDown);
