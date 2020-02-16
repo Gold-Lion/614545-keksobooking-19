@@ -1,6 +1,5 @@
 'use strict';
 
-var PIN_MAIN_HEIGHT = 80;
 var isDisabled = true;
 var isActive = false;
 var map = document.querySelector('.map');
@@ -39,7 +38,7 @@ var getCoordPinMain = function (bool) {
 
   if (bool) {
     coordX = parseInt(mapPinMain.style.left, 10) + mapPinMain.offsetWidth / 2;
-    coordY = parseInt(mapPinMain.style.top, 10) + PIN_MAIN_HEIGHT;
+    coordY = parseInt(mapPinMain.style.top, 10) + window.data.PIN_MAIN_HEIGHT;
   } else {
     coordX = parseInt(mapPinMain.style.left, 10) + mapPinMain.offsetWidth / 2;
     coordY = parseInt(mapPinMain.style.top, 10) + mapPinMain.offsetHeight / 2;

@@ -17,7 +17,7 @@
     }
   };
 
-  var isButtonEvent = function (evt, action) {
+  var isMouseButtonEvent = function (evt, action) {
     if (evt.button === LEFT_MOUSE_BUTTON) {
       action();
     }
@@ -46,6 +46,6 @@
     getAvatar: getAvatar,
     isEscEvent: isEscEvent,
     isEnterEvent: isEnterEvent,
-    isButtonEvent: isButtonEvent
+    isMouseButtonEvent: isMouseButtonEvent
   };
 })();

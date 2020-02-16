@@ -7,12 +7,12 @@
   var mapPins = map.querySelector('.map__pins');
   var templatePin = document.querySelector('#pin').content.querySelector('.map__pin');
 
-  var getCoordPinMain = function (bool) {
-    var coordX = parseInt(mapPinMain.style.left, 10) + mapPinMain.offsetWidth / 2;
-    var coordY = parseInt(mapPinMain.style.top, 10) + mapPinMain.offsetHeight / 2;
+  var getCoordPinMain = function (left, top, bool) {
+    var coordX = parseInt(left, 10) + mapPinMain.offsetWidth / 2;
+    var coordY = parseInt(top, 10) + mapPinMain.offsetHeight / 2;
 
     if (bool) {
-      coordY = parseInt(mapPinMain.style.top, 10) + PIN_MAIN_HEIGHT;
+      coordY = parseInt(top, 10) + PIN_MAIN_HEIGHT;
     }
 
     var coordsPin = Math.round(coordX) + ', ' + Math.round(coordY);
