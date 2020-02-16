@@ -17,10 +17,10 @@
   var TOTAL_PINS = 8;
   var PIN_WIDTH = 50;
   var MAP_WIDTH = 1200;
-  var MIN_X = 0;
-  var MAX_X = MAP_WIDTH - PIN_WIDTH;
-  var MIN_Y = 130;
-  var MAX_Y = 630;
+  var MIN_X = -PIN_WIDTH / 2;
+  var MAX_X = MAP_WIDTH - PIN_WIDTH / 2;
+  var MIN_Y = 130 - PIN_WIDTH;
+  var MAX_Y = 630 - PIN_WIDTH;
 
   // Создаю один шаблон объекта с данными нашего объявления и возвращаю это объявление
   var createAd = function (number) { // Создаем объект объявления
@@ -62,6 +62,13 @@
   };
 
   window.data = {
+    TOTAL_PINS: TOTAL_PINS,
+    PIN_WIDTH: PIN_WIDTH,
+    MAP_WIDTH: MAP_WIDTH,
+    MIN_X: MIN_X,
+    MAX_X: MAX_X,
+    MIN_Y: MIN_Y,
+    MAX_Y: MAX_Y,
     getArrayAds: getArrayAds
   };
 })();
