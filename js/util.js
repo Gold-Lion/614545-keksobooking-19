@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var TOTAL_PINS = 8;
   var ESC_KEYCODE = 27;
   var ENTER_KEYCODE = 13;
   var LEFT_MOUSE_BUTTON = 0;
@@ -40,6 +41,7 @@
   };
 
   window.util = {
+    TOTAL_PINS: TOTAL_PINS,
     getRandomNumber: getRandomNumber,
     getRandomElementArr: getRandomElementArr,
     getRandomLengthArr: getRandomLengthArr,
