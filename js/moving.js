@@ -3,8 +3,9 @@
 (function () {
   var PIN_MAIN_WIDTH = 66;
   var PIN_MAIN_HEIGHT = 80;
+  var MAP_WIDTH = 1200;
   var MIN_RANGE_X = -PIN_MAIN_WIDTH / 2;
-  var MAX_RANGE_X = window.data.MAP_WIDTH - PIN_MAIN_WIDTH / 2;
+  var MAX_RANGE_X = MAP_WIDTH - PIN_MAIN_WIDTH / 2;
   var MIN_RANGE_Y = 130 - PIN_MAIN_HEIGHT;
   var MAX_RANGE_Y = 630 - PIN_MAIN_HEIGHT;
   var map = document.querySelector('.map');
