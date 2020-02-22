@@ -13,7 +13,7 @@
   var adForm = document.querySelector('.ad-form');
   var address = adForm.querySelector('#address');
 
-  var getCoord = function (offset, shift, min, max) {
+  var getCoords = function (offset, shift, min, max) {
     var coord = offset - shift;
 
     if (coord >= max) {
@@ -55,8 +55,8 @@
         y: moveEvt.clientY
       };
 
-      var coordX = getCoord(mapPinMain.offsetLeft, shift.x, MIN_RANGE_X, MAX_RANGE_X);
-      var coordY = getCoord(mapPinMain.offsetTop, shift.y, MIN_RANGE_Y, MAX_RANGE_Y);
+      var coordX = getCoords(mapPinMain.offsetLeft, shift.x, MIN_RANGE_X, MAX_RANGE_X);
+      var coordY = getCoords(mapPinMain.offsetTop, shift.y, MIN_RANGE_Y, MAX_RANGE_Y);
 
       mapPinMain.style.left = coordX + 'px';
       mapPinMain.style.top = coordY + 'px';

@@ -61,6 +61,9 @@
       case 'bungalo':
         type = 'Бунгало';
         break;
+      default:
+        type = 'Неизвестное построение';
+        break;
     }
 
     return type;
@@ -123,6 +126,7 @@
   };
 
   window.card = {
-    openCardAd: openCardAd
+    openCardAd: openCardAd,
+    closeCardAd: closeCardAd
   };
 })();
