@@ -9,6 +9,8 @@
   };
   var map = document.querySelector('.map');
   var adForm = document.querySelector('.ad-form');
+  var resetFormBtn = adForm.querySelector('.ad-form__reset');
+  var mapPinMain = map.querySelector('.map__pin--main');
   var mapFilters = map.querySelector('.map__filters-container');
   var formFilters = mapFilters.querySelector('.map__filters');
   var formRoomNumber = adForm.querySelector('#room_number');
@@ -70,7 +72,6 @@
       }
     });
   };
-  onChangeRoom();
 
   // Написать валидацию, которая удаляет неподходящие элементы из селекта #capacity
   // var onChangeRoom = function () {
@@ -108,6 +109,10 @@
         price.placeholder = minPrice;
         price.min = minPrice;
         break;
+      default:
+        price.placeholder = 0;
+        price.min = 0;
+        break;
     }
   };
 
@@ -128,6 +133,45 @@
     timeOut.value = time;
   };
 
+  var setDefaultValue = function () {
+    window.pin.defaultCoordsPinMain();
+    address.value = window.pin.getCoordPinMain(mapPinMain.style.left, mapPinMain.style.top);
+    setInitialPrice();
+    disabledState(isDisabled);
+  };
+
+  var onSuccesMessage = function () {
+    window.responseMessage.showSuccessMessage();
+  };
+
+  var onErrorMessage = function (errorMessage) {
+    window.responseMessage.showErrorMessage(errorMessage);
+  };
+
+  var resetForm = function () {
+    adForm.reset();
+    formFilters.reset();
+    map.classList.add('map--faded');
+    adForm.classList.add('ad-form--disabled');
+    window.pin.removePins();
+    window.card.closeCardAd();
+    setDefaultValue();
+
+    mapPinMain.addEventListener('keydown', window.map.onPinMainEnterPress);
+  };
+
+  var onResetClick = function (evt) {
+    evt.preventDefault();
+    resetForm();
+  };
+
+  adForm.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+
+    window.backend.save(new FormData(adForm), onSuccesMessage, onErrorMessage);
+    window.responseMessage.preloaderBtnSubmit();
+  });
+
   timeIn.addEventListener('change', function (evt) {
     setInAndOutTime(evt.target.value);
   });
@@ -143,12 +187,12 @@
   formRoomNumber.addEventListener('change', onChangeRoom);
   selectGuest.addEventListener('change', onChangeRoom);
   typeOfHousing.addEventListener('input', onTypeHouseChoosing);
+  resetFormBtn.addEventListener('click', onResetClick);
 
-  address.value = window.pin.getCoordPinMain();
-  setInitialPrice();
-  disabledState(isDisabled);
+  setDefaultValue();
 
   window.form = {
-    disabledState: disabledState
+    disabledState: disabledState,
+    resetForm: resetForm
   };
 })();
