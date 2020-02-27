@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var TOTAL_PINS = 8;
+  var TOTAL_PINS = 5;
   var ESC_KEYCODE = 27;
   var ENTER_KEYCODE = 13;
   var LEFT_MOUSE_BUTTON = 0;

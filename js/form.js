@@ -196,3 +196,54 @@
     resetForm: resetForm
   };
 })();
+
+/*
+const rooms = document.querySelector('#field-one')
+const capacity = document.querySelector('#field-two')
+const options = capacity.options;
+
+
+const dic = {
+  '1': [1, 2, 3],
+  '2': [2, 3],
+  '3': [3],
+  '10': [0, 1, 2]
+}
+
+// let s = 10;
+// let e = 2;
+// console.log(dic[s][e])
+// console.log(options[dic[s][e]])
+
+function dis (count) {
+  for (let i = 0; i < count; i++) {
+    options[i].hidden = false;
+  }
+};
+
+function dics (count) {
+  dic[count].forEach(el => {
+    options[el].hidden = true;
+  })
+};
+
+function valid (count) {
+  dis(count);
+  dics(count);
+};
+
+for (let el of options) {
+  options[0].hidden = false;
+  el.hidden = true;
+}
+rooms.addEventListener('change', () => {
+  let roomsValue = rooms.value;
+  let count
+
+  if (roomsValue === '10') {
+    dis(4)
+    dics(roomsValue)
+  } else {
+    valid(roomsValue)
+  }
+})*/
