@@ -22,7 +22,7 @@
       adForm.classList.remove('ad-form--disabled');
 
       window.form.disabledState(isDisabled);
-      window.backend.load(window.pin.renderPins, window.responseMessage.onError);
+      window.backend.load(window.filter.onSuccess, window.responseMessage.onError);
 
       mapPinMain.removeEventListener('keydown', onPinMainEnterPress);
     }

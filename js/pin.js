@@ -44,9 +44,12 @@
   };
 
   var renderPins = function (ads) {
-    ads.forEach(function (ad) {
-      mapPins.appendChild(createPin(ad));
-    });
+    var takeNumber = ads.length > window.util.TOTAL_PINS ? window.util.TOTAL_PINS : ads.length;
+    removePins();
+
+    for (var i = 0; i < takeNumber; i++) {
+      mapPins.appendChild(createPin(ads[i]));
+    }
   };
 
   var removePins = function () {
