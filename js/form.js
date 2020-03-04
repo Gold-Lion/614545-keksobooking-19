@@ -29,11 +29,13 @@
     return price;
   };
 
-  var disabledState = function (bool) {
+  var disabledAdForm = function (bool) {
     adForm.querySelectorAll('fieldset').forEach(function (fieldset) {
       fieldset.disabled = bool;
     });
+  };
 
+  var disabledFiltersForm = function (bool) {
     formFilters.querySelectorAll('select, fieldset').forEach(function (select) {
       select.disabled = bool;
     });
@@ -51,10 +53,6 @@
     '2': ['2', '3'],
     '3': ['3'],
     '100': ['0', '1', '2']
-    // '1': ['2', '3', '0'],
-    // '2': ['3', '0'],
-    // '3': ['0'],
-    // '100': ['1', '2', '3']
   };
   var onChangeRoom = function () {
     var validGuestsOptions = ROOMS_FOR_GUESTS[formRoomNumber.value];
@@ -137,7 +135,8 @@
     window.pin.defaultCoordsPinMain();
     address.value = window.pin.getCoordPinMain(mapPinMain.style.left, mapPinMain.style.top);
     setInitialPrice();
-    disabledState(isDisabled);
+    disabledAdForm(isDisabled);
+    disabledFiltersForm(isDisabled);
   };
 
   var onSuccesMessage = function () {
@@ -192,7 +191,8 @@
   setDefaultValue();
 
   window.form = {
-    disabledState: disabledState,
+    disabledAdForm: disabledAdForm,
+    disabledFiltersForm: disabledFiltersForm,
     resetForm: resetForm
   };
 })();

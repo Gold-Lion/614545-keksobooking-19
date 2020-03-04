@@ -21,7 +21,8 @@
       map.classList.remove('map--faded');
       adForm.classList.remove('ad-form--disabled');
 
-      window.form.disabledState(isDisabled);
+      // window.form.disabledState(isDisabled);
+      window.form.disabledAdForm(isDisabled);
       window.backend.load(window.filter.onSuccess, window.responseMessage.onError);
 
       mapPinMain.removeEventListener('keydown', onPinMainEnterPress);
