@@ -1,7 +1,9 @@
 'use strict';
 
 (function () {
-  var HouseTypesPrices = {
+  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+  var DEFAULT_IMAGE_PREVIEW = 'img/muffin-grey.svg';
+  var HouseTypesPricesMap = {
     PALACE: 10000,
     FLAT: 1000,
     HOUSE: 5000,
@@ -22,10 +24,12 @@
   var typeOfHousing = adForm.querySelector('#type');
   var price = adForm.querySelector('#price');
   var address = adForm.querySelector('#address');
+  var adFormPreview = document.querySelector('.ad-form-header__preview img');
+  var adFormPhoto = document.querySelector('.ad-form__photo');
   var isDisabled = true;
 
   var setInitialPrice = function () {
-    price.placeholder = HouseTypesPrices[typeOfHousing.value.toUpperCase()];
+    price.placeholder = HouseTypesPricesMap[typeOfHousing.value.toUpperCase()];
     return price;
   };
 
@@ -88,7 +92,7 @@
 
   var onTypeHouseChoosing = function (evt) {
     var value = evt.target.value;
-    var minPrice = HouseTypesPrices[value.toUpperCase()];
+    var minPrice = HouseTypesPricesMap[value.toUpperCase()];
 
     switch (typeOfHousing.value) {
       case 'bungalo':
@@ -113,16 +117,39 @@
         break;
     }
   };
-
   var getFileExtension = function (str) {
     return str.slice(str.lastIndexOf('.') + 1);
   };
 
-  var checkFileExtension = function (input) {
-    if (input.value.includes('.png') || input.value.includes('.jpeg') || input.value.includes('.jpg')) {
+  var uploadImage = function (img, file) {
+    var reader = new FileReader();
+
+    reader.addEventListener('load', function () {
+      if (img.tagName.toLowerCase() !== 'div') {
+        img.src = reader.result;
+      } else {
+        img.style.backgroundSize = 'contain';
+        img.style.backgroundRepeat = 'no-repeat';
+        img.style.backgroundPosition = 'center';
+        img.style.backgroundImage = 'url(' + reader.result + ')';
+      }
+    });
+    reader.readAsDataURL(file);
+  };
+
+  var checkFileExtension = function (input, img) {
+    var file = input.files[0];
+    var fileName = file.name.toLowerCase();
+
+    var matches = FILE_TYPES.some(function (it) {
+      return fileName.endsWith(it);
+    });
+
+    if (matches) {
+      uploadImage(img, file);
       input.setCustomValidity('');
     } else {
-      input.setCustomValidity('Вы пытаетесь загрузить файл форматом "' + getFileExtension(input.value) + '". Разрешенными форматами являются: jpg и png. Пожалуйста замените формат загружаемого файла.');
+      input.setCustomValidity('Вы пытаетесь загрузить файл форматом "' + getFileExtension(input.value) + '". Разрешенными форматами являются: ' + FILE_TYPES.join(', ') + '. Пожалуйста замените формат загружаемого файла.');
     }
   };
 
@@ -154,6 +181,8 @@
     adForm.classList.add('ad-form--disabled');
     window.pin.removePins();
     window.card.closeCardAd();
+    adFormPreview.src = DEFAULT_IMAGE_PREVIEW;
+    adFormPhoto.style = '';
     setDefaultValue();
 
     mapPinMain.addEventListener('keydown', window.map.onPinMainEnterPress);
@@ -177,11 +206,11 @@
   timeOut.addEventListener('change', function (evt) {
     setInAndOutTime(evt.target.value);
   });
-  avatar.addEventListener('input', function () {
-    checkFileExtension(avatar);
+  avatar.addEventListener('change', function () {
+    checkFileExtension(avatar, adFormPreview);
   });
-  images.addEventListener('input', function () {
-    checkFileExtension(images);
+  images.addEventListener('change', function () {
+    checkFileExtension(images, adFormPhoto);
   });
   formRoomNumber.addEventListener('change', onChangeRoom);
   selectGuest.addEventListener('change', onChangeRoom);
