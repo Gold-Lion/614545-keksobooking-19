@@ -2,7 +2,6 @@
 
 /**
  * План на вторую часть
- * 1) Попробывать переписать валидацию для проверки количества комнат и гостей +-
  * 2) Исправить ошибку с неотображением с первого раза данных по photos и features, если не получиться самостоятельно то написать на toster'е и приложить демку
  * 3) Разобрать с ошибкой клоннирования card.js
  */
@@ -21,9 +20,8 @@
       map.classList.remove('map--faded');
       adForm.classList.remove('ad-form--disabled');
 
-      // window.form.disabledState(isDisabled);
       window.form.disabledAdForm(isDisabled);
-      window.backend.load(window.filter.onSuccess, window.responseMessage.onError);
+      window.backend.load(window.filter.onSuccess, window.responseMessage.showErrorMessage);
 
       mapPinMain.removeEventListener('keydown', onPinMainEnterPress);
     }
