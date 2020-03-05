@@ -1,7 +1,15 @@
 'use strict';
 
 (function () {
-  var HouseTypesPrices = {
+  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+  var DEFAULT_IMAGE_PREVIEW = 'img/muffin-grey.svg';
+  var ROOMS_FOR_GUESTS = {
+    '1': ['1'],
+    '2': ['2', '1'],
+    '3': ['3', '2', '1'],
+    '100': ['0']
+  };
+  var HouseTypesAndPricesMap = {
     PALACE: 10000,
     FLAT: 1000,
     HOUSE: 5000,
@@ -15,6 +23,7 @@
   var formFilters = mapFilters.querySelector('.map__filters');
   var formRoomNumber = adForm.querySelector('#room_number');
   var selectGuest = adForm.querySelector('#capacity');
+  var guestsOptions = selectGuest.querySelectorAll('option');
   var timeIn = adForm.querySelector('#timein');
   var timeOut = adForm.querySelector('#timeout');
   var avatar = adForm.querySelector('#avatar');
@@ -22,10 +31,12 @@
   var typeOfHousing = adForm.querySelector('#type');
   var price = adForm.querySelector('#price');
   var address = adForm.querySelector('#address');
+  var adFormPreview = document.querySelector('.ad-form-header__preview img');
+  var adFormPhoto = document.querySelector('.ad-form__photo');
   var isDisabled = true;
 
   var setInitialPrice = function () {
-    price.placeholder = HouseTypesPrices[typeOfHousing.value.toUpperCase()];
+    price.placeholder = HouseTypesAndPricesMap[typeOfHousing.value.toUpperCase()];
     return price;
   };
 
@@ -41,75 +52,57 @@
     });
   };
 
-  // var ROOMS_FOR_GUESTS = {
-  //   '1': ['1'],
-  //   '2': ['2', '1'],
-  //   '3': ['3', '2', '1'],
-  //   '100': ['0']
-  // };
-
-  var ROOMS_FOR_GUESTS = {
-    '1': ['1', '2', '3'],
-    '2': ['2', '3'],
-    '3': ['3'],
-    '100': ['0', '1', '2']
-  };
-  var onChangeRoom = function () {
-    var validGuestsOptions = ROOMS_FOR_GUESTS[formRoomNumber.value];
-    var guestsOptions = selectGuest.querySelectorAll('option');
-
+  var disabledGuestOptions = function () {
     guestsOptions.forEach(function (option) {
       option.hidden = true;
-      option.selected = false;
+    });
+    guestsOptions[0].hidden = false;
+  };
+
+  var validateGuest = function () {
+    var validGuestsOptions = ROOMS_FOR_GUESTS[formRoomNumber.value];
+
+    guestsOptions.forEach(function (option) {
       var index = validGuestsOptions.indexOf(option.value);
-      if (index >= 0) {
+      if (index === -1) {
+        option.hidden = true;
+      } else {
         option.hidden = false;
-        if (index === 0) {
-          option.selected = true;
-        }
+      }
+      if (index === 0) {
+        option.selected = true;
       }
     });
   };
 
-  // Написать валидацию, которая удаляет неподходящие элементы из селекта #capacity
-  // var onChangeRoom = function () {
-  //   if (formRoomNumber.value === '1' && selectGuest.value !== '1') {
-  //     selectGuest.setCustomValidity('«1 комната» - «для 1 гостя»');
-  //   } else if (formRoomNumber.value === '2' && (selectGuest.value !== '1' && selectGuest.value !== '2')) {
-  //     selectGuest.setCustomValidity('«2 комнаты» - «для 2 гостей» или «для 1 гостя»');
-  //   } else if (formRoomNumber.value === '3' && selectGuest.value === '0') {
-  //     selectGuest.setCustomValidity('«3 комнаты» - «для 3 гостей», «для 2 гостей» или «для 1 гостя»');
-  //   } else if (formRoomNumber.value === '100' && selectGuest.value !== '0') {
-  //     selectGuest.setCustomValidity('«100 комнат» - «не для гостей»');
-  //   } else {
-  //     selectGuest.setCustomValidity('');
-  //   }
-  // };
+  var onRoomChange = function () {
+    validateGuest();
+  };
+
+  var setDefPrice = function (minPrice) {
+    price.placeholder = minPrice;
+    price.min = minPrice;
+  };
 
   var onTypeHouseChoosing = function (evt) {
     var value = evt.target.value;
-    var minPrice = HouseTypesPrices[value.toUpperCase()];
+    var minPrice = HouseTypesAndPricesMap[value.toUpperCase()];
 
-    switch (typeOfHousing.value) {
+    switch (value) {
       case 'bungalo':
-        price.placeholder = minPrice;
-        price.min = minPrice;
+        setDefPrice(minPrice);
         break;
       case 'flat':
-        price.placeholder = minPrice;
-        price.min = minPrice;
+        setDefPrice(minPrice);
         break;
       case 'house':
-        price.placeholder = minPrice;
-        price.min = minPrice;
+        setDefPrice(minPrice);
         break;
       case 'palace':
-        price.placeholder = minPrice;
-        price.min = minPrice;
+        setDefPrice(minPrice);
         break;
       default:
-        price.placeholder = 0;
-        price.min = 0;
+        setDefPrice(0);
         break;
     }
   };
@@ -118,11 +111,35 @@
     return str.slice(str.lastIndexOf('.') + 1);
   };
 
-  var checkFileExtension = function (input) {
-    if (input.value.includes('.png') || input.value.includes('.jpeg') || input.value.includes('.jpg')) {
+  var uploadImage = function (img, file) {
+    var reader = new FileReader();
+
+    reader.addEventListener('load', function () {
+      if (img.tagName.toLowerCase() !== 'div') {
+        img.src = reader.result;
+      } else {
+        img.style.backgroundSize = 'contain';
+        img.style.backgroundRepeat = 'no-repeat';
+        img.style.backgroundPosition = 'center';
+        img.style.backgroundImage = 'url(' + reader.result + ')';
+      }
+    });
+    reader.readAsDataURL(file);
+  };
+
+  var checkFileExtension = function (input, img) {
+    var file = input.files[0];
+    var fileName = file.name.toLowerCase();
+
+    var matches = FILE_TYPES.some(function (it) {
+      return fileName.endsWith(it);
+    });
+
+    if (matches) {
+      uploadImage(img, file);
       input.setCustomValidity('');
     } else {
-      input.setCustomValidity('Вы пытаетесь загрузить файл форматом "' + getFileExtension(input.value) + '". Разрешенными форматами являются: jpg и png. Пожалуйста замените формат загружаемого файла.');
+      input.setCustomValidity('Вы пытаетесь загрузить файл форматом "' + getFileExtension(input.value) + '". Разрешенными форматами являются: ' + FILE_TYPES.join(', ') + '. Пожалуйста замените формат загружаемого файла.');
     }
   };
 
@@ -135,6 +152,7 @@
     window.pin.defaultCoordsPinMain();
     address.value = window.pin.getCoordPinMain(mapPinMain.style.left, mapPinMain.style.top);
     setInitialPrice();
+    disabledGuestOptions();
     disabledAdForm(isDisabled);
     disabledFiltersForm(isDisabled);
   };
@@ -154,6 +172,8 @@
     adForm.classList.add('ad-form--disabled');
     window.pin.removePins();
     window.card.closeCardAd();
+    adFormPreview.src = DEFAULT_IMAGE_PREVIEW;
+    adFormPhoto.style = '';
     setDefaultValue();
 
     mapPinMain.addEventListener('keydown', window.map.onPinMainEnterPress);
@@ -177,14 +197,13 @@
   timeOut.addEventListener('change', function (evt) {
     setInAndOutTime(evt.target.value);
   });
-  avatar.addEventListener('input', function () {
-    checkFileExtension(avatar);
+  avatar.addEventListener('change', function () {
+    checkFileExtension(avatar, adFormPreview);
   });
-  images.addEventListener('input', function () {
-    checkFileExtension(images);
+  images.addEventListener('change', function () {
+    checkFileExtension(images, adFormPhoto);
   });
-  formRoomNumber.addEventListener('change', onChangeRoom);
-  selectGuest.addEventListener('change', onChangeRoom);
+  formRoomNumber.addEventListener('change', onRoomChange);
   typeOfHousing.addEventListener('input', onTypeHouseChoosing);
   resetFormBtn.addEventListener('click', onResetClick);
 
@@ -196,54 +215,3 @@
     resetForm: resetForm
   };
 })();
-
-/*
-const rooms = document.querySelector('#field-one')
-const capacity = document.querySelector('#field-two')
-const options = capacity.options;
-
-
-const dic = {
-  '1': [1, 2, 3],
-  '2': [2, 3],
-  '3': [3],
-  '10': [0, 1, 2]
-}
-
-// let s = 10;
-// let e = 2;
-// console.log(dic[s][e])
-// console.log(options[dic[s][e]])
-
-function dis (count) {
-  for (let i = 0; i < count; i++) {
-    options[i].hidden = false;
-  }
-};
-
-function dics (count) {
-  dic[count].forEach(el => {
-    options[el].hidden = true;
-  })
-};
-
-function valid (count) {
-  dis(count);
-  dics(count);
-};
-
-for (let el of options) {
-  options[0].hidden = false;
-  el.hidden = true;
-}
-rooms.addEventListener('change', () => {
-  let roomsValue = rooms.value;
-  let count
-
-  if (roomsValue === '10') {
-    dis(4)
-    dics(roomsValue)
-  } else {
-    valid(roomsValue)
-  }
-})*/

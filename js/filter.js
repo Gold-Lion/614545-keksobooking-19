@@ -1,6 +1,18 @@
 'use strict';
 
 (function () {
+  var NO_FILTER = 'any';
+  var housingPriceMap = {
+    Range: {
+      MIDDLE: 'middle',
+      LOW: 'low',
+      HIGH: 'high'
+    },
+    RangeValue: {
+      LOW: 10000,
+      HIGH: 50000
+    }
+  };
   var filtersForm = document.querySelector('.map__filters');
   var housingType = filtersForm.querySelector('#housing-type');
   var housingPrice = filtersForm.querySelector('#housing-price');
@@ -8,75 +20,46 @@
   var housingGuest = filtersForm.querySelector('#housing-guests');
 
   var updateData = function (ads) {
-    var houseType = housingType.value;
-    var housePrice = housingPrice.value;
-    var houseRooms = housingRooms.value;
-    var houseGuest = housingGuest.value;
-    var housingFeatures = Array.from(filtersForm.querySelectorAll('.map__checkbox:checked')).map(function (it) {
+    var typeValue = housingType.value;
+    var priceValue = housingPrice.value;
+    var roomsValue = housingRooms.value;
+    var guestsValue = housingGuest.value;
+    var featuresValue = Array.from(filtersForm.querySelectorAll('.map__checkbox:checked')).map(function (it) {
       return it.value;
     });
-    console.log('housingFeatures: ', housingFeatures);
-
 
     var filterHouse = ads.filter(function (ad) {
-      if (houseType === 'any') {
-        return ads;
+      if (typeValue === NO_FILTER) {
+        return true;
       }
-      return ad.offer.type === houseType;
+      return ad.offer.type === typeValue;
     })
     .filter(function (ad) {
-      var price;
-      switch (housePrice) {
-        case 'middle':
-          price = ad.offer.price >= 10000 && ad.offer.price <= 50000;
-          break;
-        case 'low':
-          price = ad.offer.price < 10000;
-          break;
-        case 'high':
-          price = ad.offer.price > 50000;
-          break;
+      switch (priceValue) {
+        case housingPriceMap.Range.MIDDLE:
+          return ad.offer.price >= housingPriceMap.RangeValue.LOW && ad.offer.price <= housingPriceMap.RangeValue.HIGH;
+        case housingPriceMap.Range.LOW:
+          return ad.offer.price < housingPriceMap.RangeValue.LOW;
+        case housingPriceMap.Range.HIGH:
+          return ad.offer.price > housingPriceMap.RangeValue.HIGH;
         default:
-          return ads;
+          return true;
       }
-      return price;
     })
     .filter(function (ad) {
-      var rooms;
-      switch (houseRooms) {
-        case '1':
-          rooms = ad.offer.rooms === 1;
-          break;
-        case '2':
-          rooms = ad.offer.rooms === 2;
-          break;
-        case '3':
-          rooms = ad.offer.rooms === 3;
-          break;
-        default:
-          return ads;
+      if (roomsValue === NO_FILTER) {
+        return true;
       }
-      return rooms;
+      return ad.offer.rooms === +roomsValue;
     })
     .filter(function (ad) {
-      var guest;
-      switch (houseGuest) {
-        case '2':
-          guest = ad.offer.guests === 2;
-          break;
-        case '1':
-          guest = ad.offer.guests === 1;
-          break;
-        case '0':
-          guest = ad.offer.guests === 0;
-          break;
-        default:
-          return ads;
+      if (guestsValue === NO_FILTER) {
+        return true;
       }
-      return guest;
+      return ad.offer.guests === +guestsValue;
     })
     .filter(function (ad) {
-      return housingFeatures.every(function (it) {
+      return featuresValue.every(function (it) {
         return ad.offer.features.includes(it);
       });
     });

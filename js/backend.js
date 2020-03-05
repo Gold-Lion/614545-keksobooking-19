@@ -4,7 +4,7 @@
   var TIMEOUT_IN_MS = 10000;
   var StatusCode = {
     OK: 200,
-    NOT_FOUND: 404,
+    NOT_FOUND_ERROR: 404,
     SERVER_ERROR: 500
   };
   var URL_METHOD = {
@@ -22,14 +22,14 @@
         case StatusCode.OK:
           onLoad(xhr.response);
           break;
-        case StatusCode.NOT_FOUND:
+        case StatusCode.NOT_FOUND_ERROR:
           onError('Ошибка. Сервер не может найти запрашиваемый ресурс');
           break;
         case StatusCode.SERVER_ERROR:
           onError('Внутренняя ошибка сервера');
           break;
         default:
-          onError('Ошибка. Статус ошибки: ' + xhr.status + ' ' + xhr.statusText);
+          onError('Ошибка! Статус ошибки: ' + xhr.status + ' ' + xhr.statusText);
           break;
       }
     });
