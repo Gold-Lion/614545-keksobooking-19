@@ -1,11 +1,5 @@
 'use strict';
 
-/**
- * План на вторую часть
- * 2) Исправить ошибку с неотображением с первого раза данных по photos и features, если не получиться самостоятельно то написать на toster'е и приложить демку
- * 3) Разобрать с ошибкой клоннирования card.js
- */
-
 (function () {
   var map = document.querySelector('.map');
   var mapPinMain = map.querySelector('.map__pin--main');
@@ -13,7 +7,7 @@
   var address = adForm.querySelector('#address');
 
 
-  var activeMap = function () { // Активируем карту
+  var activeMap = function () {
     if (map.classList.contains('map--faded')) {
       var isDisabled = false;
 

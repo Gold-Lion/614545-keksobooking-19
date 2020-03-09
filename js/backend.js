@@ -7,7 +7,7 @@
     NOT_FOUND_ERROR: 404,
     SERVER_ERROR: 500
   };
-  var URL_METHOD = {
+  var UrlMethod = {
     GET: 'https://js.dump.academy/keksobooking/data',
     POST: 'https://js.dump.academy/keksobooking'
   };
@@ -45,13 +45,13 @@
 
   var load = function (onLoad, onError) {
     var xhr = getHttpRequest(onLoad, onError);
-    xhr.open('GET', URL_METHOD.GET);
+    xhr.open('GET', UrlMethod.GET);
     xhr.send();
   };
 
   var save = function (data, onLoad, onError) {
     var xhr = getHttpRequest(onLoad, onError);
-    xhr.open('POST', URL_METHOD.POST);
+    xhr.open('POST', UrlMethod.POST);
     xhr.send(data);
   };
 

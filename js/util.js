@@ -24,19 +24,19 @@
     }
   };
 
-  var getRandomNumber = function (min, max) { // Получаем случайное число в заданном диапазоне
+  var getRandomNumber = function (min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   };
 
-  var getRandomElementArr = function (arr) { // Получаем случайный элемент массива
+  var getRandomElementArr = function (arr) {
     return arr[getRandomNumber(0, arr.length - 1)];
   };
 
-  var getAvatar = function (number) { // Получаем адрес аватарок
+  var getAvatar = function (number) {
     return 'img/avatars/user' + (number < 10 ? '0' + number : number) + '.png';
   };
 
-  var getRandomLengthArr = function (arr) { // Изменяем передаваемый массив и возвращаем измененный массив от нулевого элемента до элемента случайной длины
+  var getRandomLengthArr = function (arr) {
     return arr.slice(0, arr.indexOf(getRandomElementArr(arr)) + 1);
   };
 

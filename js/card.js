@@ -1,12 +1,17 @@
 'use strict';
 
 (function () {
+  var typeHouseMap = {
+    'palace': 'Дворец',
+    'flat': 'Квартира',
+    'house': 'Дом',
+    'bungalo': 'Бунгало'
+  };
   var map = document.querySelector('.map');
   var mapFilters = map.querySelector('.map__filters-container');
   var templateCard = document.querySelector('#card').content.querySelector('.map__card');
 
-  // Создаю функцию, которая принимает данные пина, на котором произошло событие клика. По этим данным создаю карточку объявлений и возвращаю её
-  var createCard = function (ad) { // Создаем карточку объявлений по полученным данным из массива
+  var createCard = function (ad) {
     var newCardTemplate = templateCard.cloneNode(true);
     newCardTemplate.querySelector('.popup__avatar').src = ad.author.avatar;
     newCardTemplate.querySelector('.popup__title').textContent = ad.offer.title;
@@ -16,8 +21,8 @@
     newCardTemplate.querySelector('.popup__text--capacity').textContent = declensionWords(ad.offer.rooms, ad.offer.guests);
     newCardTemplate.querySelector('.popup__text--time').textContent = 'Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkout;
     newCardTemplate.querySelector('.popup__description').textContent = ad.offer.description;
-    renderFeature(ad.offer.features);
-    renderPhotos(ad.offer.photos);
+    renderFeature(newCardTemplate.querySelector('.popup__features'), ad.offer.features);
+    renderPhotos(newCardTemplate.querySelector('.popup__photos'), ad.offer.photos);
     newCardTemplate.querySelector('.popup__close').addEventListener('click', function () {
       closeCardAd();
     });
@@ -25,7 +30,7 @@
     return newCardTemplate;
   };
 
-  var declensionWords = function (totalRooms, totalQuests) { // Проверяем склонение слов
+  var declensionWords = function (totalRooms, totalQuests) {
     var message = totalRooms;
 
     if (totalRooms % 10 === 1 && totalRooms % 100 !== 11) {
@@ -45,68 +50,38 @@
     return message;
   };
 
-  var getTypeHouse = function (typeHouse) { // Получаем тип жилища в зависимости от полученых данных
-    var type = '';
-
-    switch (typeHouse) {
-      case 'palace':
-        type = 'Дворец';
-        break;
-      case 'flat':
-        type = 'Квартира';
-        break;
-      case 'house':
-        type = 'Дом';
-        break;
-      case 'bungalo':
-        type = 'Бунгало';
-        break;
-      default:
-        type = 'Неизвестное построение';
-        break;
+  var getTypeHouse = function (typeHouse) {
+    if (typeHouseMap[typeHouse]) {
+      return typeHouseMap[typeHouse];
     }
 
-    return type;
+    return 'Неизвестное построение';
   };
 
-  var renderFeature = function (features) { // Отрисовываем особенности объявления
-    var featuresFragment = document.createDocumentFragment();
-    var featureList = templateCard.querySelector('.popup__features');
-    featureList.innerHTML = '';
+  var renderFeature = function (container, features) {
+    if (!Array.isArray(features) || features.length === 0) {
+      container.remove();
+      return;
+    }
 
+    container.innerHTML = '';
     features.forEach(function (feature) {
-      var newFeature = document.createElement('li');
-      newFeature.className = 'popup__feature popup__feature--' + feature;
-      featuresFragment.appendChild(newFeature);
+      container.innerHTML += '<li class="popup__feature popup__feature--' + feature + '"</li>';
     });
-
-    if (features.length > 0) {
-      featureList.appendChild(featuresFragment);
-    } else {
-      featureList.classList.add('hidden');
-    }
   };
 
-  var renderPhotos = function (photos) { // Отрисовываем фотографии объявления
-    var photosFragment = document.createDocumentFragment();
-    var photosList = templateCard.querySelector('.popup__photos');
-    var photoItem = photosList.querySelector('.popup__photo');
-    photosList.innerHTML = '';
+  var renderPhotos = function (container, photos) {
+    if (!Array.isArray(photos) || photos.length === 0) {
+      container.remove();
+      return;
+    }
 
+    container.innerHTML = '';
     photos.forEach(function (photo) {
-      var newPhoto = photoItem.cloneNode(true);
-      newPhoto.src = photo;
-      photosFragment.appendChild(newPhoto);
+      container.innerHTML += '<img src="' + photo + '" class="popup__photo" width="45" height="40" alt="Фотография жилья">';
     });
-
-    if (photos.length > 0) {
-      photosList.appendChild(photosFragment);
-    } else {
-      photosList.classList.add('hidden');
-    }
   };
 
-  // Проверяю находятся ли в контейнере с пинами сами пины, если да, тогда удаляем их
   var closeCardAd = function () {
     var card = document.querySelector('.map__card');
     if (card) {

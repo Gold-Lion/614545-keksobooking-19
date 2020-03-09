@@ -28,15 +28,21 @@
     return coords;
   };
 
-  // Создаю пин на основе полученных данных из массива
+  var setActivePin = function (pin) {
+    mapPins.querySelectorAll('.map__pin:not(.map__pin--main)').forEach(function (it) {
+      it.classList.remove('map__pin--active');
+    });
+    pin.classList.add('map__pin--active');
+  };
+
   var createPin = function (ad) {
     var newPinTemplate = pinTemplate.cloneNode(true);
     newPinTemplate.querySelector('img').src = ad.author.avatar;
     newPinTemplate.querySelector('img').alt = ad.offer.title;
     newPinTemplate.style = 'left: ' + (ad.location.x - PIN_WIDTH / 2) + 'px; top: ' + (ad.location.y - PIN_MAIN_HEIGHT) + 'px;';
 
-    newPinTemplate.addEventListener('click', function () {
-      // console.log(ad);
+    newPinTemplate.addEventListener('click', function (evt) {
+      setActivePin(evt.currentTarget);
       window.card.openCardAd(ad);
     });
 

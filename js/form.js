@@ -3,17 +3,23 @@
 (function () {
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
   var DEFAULT_IMAGE_PREVIEW = 'img/muffin-grey.svg';
-  var ROOMS_FOR_GUESTS = {
+  var roomsForGuestsMap = {
     '1': ['1'],
     '2': ['2', '1'],
     '3': ['3', '2', '1'],
     '100': ['0']
   };
-  var HouseTypesAndPricesMap = {
-    PALACE: 10000,
+  var priceMap = {
+    'bungalo': 0,
+    'flat': 1000,
+    'house': 5000,
+    'palace': 10000
+  };
+  var HouseTypesAndPrices = {
+    BUNGALO: 0,
     FLAT: 1000,
-    HOUSE: 5000,
-    BUNGALO: 0
+    PALACE: 10000,
+    HOUSE: 5000
   };
   var map = document.querySelector('.map');
   var adForm = document.querySelector('.ad-form');
@@ -36,7 +42,7 @@
   var isDisabled = true;
 
   var setInitialPrice = function () {
-    price.placeholder = HouseTypesAndPricesMap[typeOfHousing.value.toUpperCase()];
+    price.placeholder = HouseTypesAndPrices[typeOfHousing.value.toUpperCase()];
     return price;
   };
 
@@ -60,7 +66,7 @@
   };
 
   var validateGuest = function () {
-    var validGuestsOptions = ROOMS_FOR_GUESTS[formRoomNumber.value];
+    var validGuestsOptions = roomsForGuestsMap[formRoomNumber.value];
 
     guestsOptions.forEach(function (option) {
       var index = validGuestsOptions.indexOf(option.value);
@@ -86,25 +92,12 @@
 
   var onTypeHouseChoosing = function (evt) {
     var value = evt.target.value;
-    var minPrice = HouseTypesAndPricesMap[value.toUpperCase()];
 
-    switch (value) {
-      case 'bungalo':
-        setDefPrice(minPrice);
-        break;
-      case 'flat':
-        setDefPrice(minPrice);
-        break;
-      case 'house':
-        setDefPrice(minPrice);
-        break;
-      case 'palace':
-        setDefPrice(minPrice);
-        break;
-      default:
-        setDefPrice(0);
-        break;
+    if (priceMap[value]) {
+      return setDefPrice(priceMap[value]);
     }
+
+    return setDefPrice(0);
   };
 
   var getFileExtension = function (str) {
