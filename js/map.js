@@ -14,8 +14,8 @@
       map.classList.remove('map--faded');
       adForm.classList.remove('ad-form--disabled');
 
-      window.form.disabledAdForm(isDisabled);
-      window.backend.load(window.filter.onSuccess, window.responseMessage.showErrorMessage);
+      window.form.disabledAd(isDisabled);
+      window.backend.load(window.filter.onSuccess, window.responseMessage.showError);
 
       mapPinMain.removeEventListener('keydown', onPinMainEnterPress);
     }
@@ -26,10 +26,10 @@
   };
 
   mapPinMain.addEventListener('keydown', onPinMainEnterPress);
-  address.value = window.pin.getCoordPinMain(mapPinMain.style.left, mapPinMain.style.top);
+  address.value = window.pin.getCoord(mapPinMain.style.left, mapPinMain.style.top);
 
   window.map = {
-    activeMap: activeMap,
+    active: activeMap,
     onPinMainEnterPress: onPinMainEnterPress
   };
 })();

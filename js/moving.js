@@ -26,13 +26,13 @@
   };
 
   var setCoords = function (bool) {
-    return window.pin.getCoordPinMain(mapPinMain.style.left, mapPinMain.style.top, bool);
+    return window.pin.getCoord(mapPinMain.style.left, mapPinMain.style.top, bool);
   };
 
   mapPinMain.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
 
-    window.util.isMouseButtonEvent(evt, window.map.activeMap);
+    window.util.isMouseButtonEvent(evt, window.map.active);
 
     var isActive = true;
     address.value = setCoords(isActive);

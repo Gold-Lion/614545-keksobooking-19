@@ -63,7 +63,7 @@
         return ad.offer.features.includes(it);
       });
     });
-    window.pin.renderPins(filterHouse);
+    window.pin.render(filterHouse);
   };
 
   var onSuccess = function (data) {
@@ -71,12 +71,12 @@
     var isDisabled = false;
 
     var onFiltersFormChange = function () {
-      window.card.closeCardAd();
+      window.card.closeAd();
       updateData(ads);
     };
 
-    window.pin.renderPins(ads);
-    window.form.disabledFiltersForm(isDisabled);
+    window.pin.render(ads);
+    window.form.disabledFilters(isDisabled);
     filtersForm.addEventListener('change', window.debounce(onFiltersFormChange));
   };
 

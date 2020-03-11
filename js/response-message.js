@@ -50,8 +50,8 @@
 
 
   window.responseMessage = {
-    showSuccessMessage: showSuccessMessage,
-    showErrorMessage: showErrorMessage,
+    showSuccess: showSuccessMessage,
+    showError: showErrorMessage,
     preloaderBtnSubmit: preloaderBtnSubmit
   };
 })();

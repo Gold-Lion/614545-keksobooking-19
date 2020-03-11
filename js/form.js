@@ -142,8 +142,8 @@
   };
 
   var setDefaultValue = function () {
-    window.pin.defaultCoordsPinMain();
-    address.value = window.pin.getCoordPinMain(mapPinMain.style.left, mapPinMain.style.top);
+    window.pin.defaultCoords();
+    address.value = window.pin.getCoord(mapPinMain.style.left, mapPinMain.style.top);
     setInitialPrice();
     disabledGuestOptions();
     disabledAdForm(isDisabled);
@@ -151,11 +151,11 @@
   };
 
   var onSuccesMessage = function () {
-    window.responseMessage.showSuccessMessage();
+    window.responseMessage.showSuccess();
   };
 
   var onErrorMessage = function (errorMessage) {
-    window.responseMessage.showErrorMessage(errorMessage);
+    window.responseMessage.showError(errorMessage);
   };
 
   var resetForm = function () {
@@ -163,8 +163,8 @@
     formFilters.reset();
     map.classList.add('map--faded');
     adForm.classList.add('ad-form--disabled');
-    window.pin.removePins();
-    window.card.closeCardAd();
+    window.pin.remove();
+    window.card.closeAd();
     adFormPreview.src = DEFAULT_IMAGE_PREVIEW;
     adFormPhoto.style = '';
     setDefaultValue();
@@ -203,8 +203,8 @@
   setDefaultValue();
 
   window.form = {
-    disabledAdForm: disabledAdForm,
-    disabledFiltersForm: disabledFiltersForm,
-    resetForm: resetForm
+    disabledAd: disabledAdForm,
+    disabledFilters: disabledFiltersForm,
+    reset: resetForm
   };
 })();

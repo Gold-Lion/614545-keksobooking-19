@@ -101,7 +101,7 @@
   };
 
   window.card = {
-    openCardAd: openCardAd,
-    closeCardAd: closeCardAd
+    openAd: openCardAd,
+    closeAd: closeCardAd
   };
 })();

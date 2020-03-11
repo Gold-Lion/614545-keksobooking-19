@@ -43,7 +43,7 @@
 
     newPinTemplate.addEventListener('click', function (evt) {
       setActivePin(evt.currentTarget);
-      window.card.openCardAd(ad);
+      window.card.openAd(ad);
     });
 
     return newPinTemplate;
@@ -66,10 +66,10 @@
   };
 
   window.pin = {
-    defaultCoordsPinMain: defaultCoordsPinMain,
-    getCoordPinMain: getCoordPinMain,
-    renderPins: renderPins,
-    createPin: createPin,
-    removePins: removePins
+    defaultCoords: defaultCoordsPinMain,
+    getCoord: getCoordPinMain,
+    render: renderPins,
+    create: createPin,
+    remove: removePins
   };
 })();
